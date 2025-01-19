@@ -1,22 +1,26 @@
-# Dotfiles [![CI](https://github.com/nahueespinosa/.dotfiles/actions/workflows/build.yml/badge.svg)](https://github.com/nahueespinosa/.dotfiles/actions/workflows/build.yml)
+# Dotfiles
 
-These are the configuration files and plugins that I use for command-line programs.
-I **do not recommend** installing them unless you're willing to overwrite the dotfiles on your machine. However, feel free to copy whatever you want.
+[![CI](https://github.com/nahueespinosa/.dotfiles/actions/workflows/build.yml/badge.svg)](https://github.com/nahueespinosa/.dotfiles/actions/workflows/build.yml)
+
+These are the configuration files and plugins that I ([@nahueespinosa](https://github.com/nahueespinosa)) use for command-line programs.
 
 Powered by [dotbot](https://github.com/anishathalye/dotbot/).
+
+> [!CAUTION]
+> I **do not recommend** installing them unless you're willing to overwrite the dotfiles on your machine. However, feel free to copy whatever you want.
 
 ![Screenshot](misc/screenshot.png)
 
 ## Requirements
 
-These configuration files have been tested in `Ubuntu 20.04` with:
+These configuration files have been tested in `Ubuntu 22.04` with:
 
-- `cmake 3.16.3`
-- `git 2.25.1`
-- `python 3.8.10`
-- `tmux 3.0a`
-- `vim 8.1.2269`
-- `zsh 5.8`
+- `cmake 3.31.2`
+- `git 2.34.1`
+- `python 3.10.12`
+- `tmux 3.2a`
+- `vim 8.2`
+- `zsh 5.8.1`
 
 ## Installation
 
@@ -37,7 +41,3 @@ Make `zsh` your default shell if you haven't already:
 ```bash
 chsh -s $(which zsh)
 ```
-
-## License
-
-[MIT](LICENSE)
