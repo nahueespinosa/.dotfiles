@@ -24,8 +24,3 @@
 [push]
   autoSetupRemote = true
   default = current
-[url "git@github.com:"]
-  insteadOf = git://github.com/
-[url "git@github.com:"]
-  insteadOf = https://github.com/
-
