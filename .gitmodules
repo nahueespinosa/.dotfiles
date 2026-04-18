@@ -1,15 +1,12 @@
 [submodule "dotbot"]
   path = dotbot
   url = https://github.com/anishathalye/dotbot
-  ignore = dirty
 [submodule "lightline.vim"]
   path = vim/plugins/lightline.vim
   url = https://github.com/itchyny/lightline.vim
-  ignore = dirty
 [submodule "nerdtree"]
   path = vim/plugins/nerdtree
   url = https://github.com/preservim/nerdtree.git
-  ignore = dirty
 [submodule "YouCompleteMe"]
   path = vim/plugins/YouCompleteMe
   url = https://github.com/Valloric/YouCompleteMe.git
@@ -18,11 +15,9 @@
 [submodule "onehalf"]
   path = vim/plugins/onehalf
   url = https://github.com/sonph/onehalf.git
-  ignore = dirty
 [submodule "vim-fugitive"]
   path = vim/plugins/vim-fugitive
   url = https://github.com/tpope/vim-fugitive.git
-  ignore = dirty
 [submodule "fzf.vim"]
   path = vim/plugins/fzf.vim
   url = https://github.com/junegunn/fzf.vim.git
