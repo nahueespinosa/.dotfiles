@@ -13,13 +13,13 @@ Powered by [dotbot](https://github.com/anishathalye/dotbot/).
 
 ## Requirements
 
-These configuration files have been tested in `Ubuntu 22.04` with:
+These configuration files have been tested in `Ubuntu 24.04` with:
 
-- `cmake 3.31.2`
-- `git 2.34.1`
-- `python 3.10.12`
-- `tmux 3.2a`
-- `vim 8.2`
+- `cmake 3.28.3`
+- `git 2.43.0`
+- `python 3.12.3`
+- `tmux 3.4`
+- `vim 9.1`
 
 ## Installation
 
