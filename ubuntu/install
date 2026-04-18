@@ -64,4 +64,11 @@ DIVE_VERSION=$(curl -s https://api.github.com/repos/wagoodman/dive/releases/late
 curl -L "https://github.com/wagoodman/dive/releases/download/${DIVE_VERSION}/dive_${DIVE_VERSION:1}_linux_amd64.deb" -o /tmp/dive.deb
 sudo apt-get install -y /tmp/dive.deb
 
+# Bazelisk (latest release)
+log "Installing Bazelisk..."
+BAZELISK_VERSION=$(curl -s https://api.github.com/repos/bazelbuild/bazelisk/releases/latest | grep tag_name | cut -d'"' -f4)
+sudo curl -L "https://github.com/bazelbuild/bazelisk/releases/download/${BAZELISK_VERSION}/bazelisk-linux-amd64" -o /usr/local/bin/bazelisk
+sudo chmod +x /usr/local/bin/bazelisk
+sudo ln -sf /usr/local/bin/bazelisk /usr/local/bin/bazel
+
 log "Setup complete!"
