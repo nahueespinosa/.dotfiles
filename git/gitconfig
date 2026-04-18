@@ -24,3 +24,5 @@
 [push]
   autoSetupRemote = true
   default = current
+[init]
+	defautlBranch = main
