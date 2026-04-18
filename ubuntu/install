@@ -33,8 +33,7 @@ sudo apt-get install -y --no-install-recommends \
   software-properties-common \
   tmux \
   vim \
-  vim-gtk3 \
-  zsh
+  vim-gtk3
 
 # Docker (using official script)
 log "Installing Docker..."
@@ -56,9 +55,5 @@ log "Installing Dive..."
 DIVE_VERSION=$(curl -s https://api.github.com/repos/wagoodman/dive/releases/latest | grep tag_name | cut -d'"' -f4)
 curl -L "https://github.com/wagoodman/dive/releases/download/${DIVE_VERSION}/dive_${DIVE_VERSION:1}_linux_amd64.deb" -o /tmp/dive.deb
 sudo apt-get install -y /tmp/dive.deb
-
-# Shell configuration
-log "Setting default shell to zsh..."
-sudo chsh -s "$(which zsh)" "$USER"
 
 log "Setup complete!"

@@ -20,7 +20,6 @@ These configuration files have been tested in `Ubuntu 22.04` with:
 - `python 3.10.12`
 - `tmux 3.2a`
 - `vim 8.2`
-- `zsh 5.8.1`
 
 ## Installation
 
@@ -34,10 +33,4 @@ Install dotfiles:
 
 ```bash
 ~/.dotfiles/install
-```
-
-Make `zsh` your default shell if you haven't already:
-
-```bash
-chsh -s $(which zsh)
 ```

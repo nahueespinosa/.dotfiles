@@ -11,8 +11,6 @@
 - clean:
     ~/:
       force: true
-    ~/.oh-my-zsh:
-      recursive: true
     ~/.vim:
       recursive: true
 
@@ -22,9 +20,6 @@
 
 - link:
     ~/.gitconfig: git/gitconfig
-    ~/.zshrc: zsh/zshrc
-    ~/.oh-my-zsh: zsh/oh-my-zsh
-    ~/.oh-my-zsh/custom: zsh/oh-my-zsh-custom
     ~/.vimrc: vim/vimrc
     ~/.vim/pack/remote/start: vim/plugins
     ~/.tmux.conf: tmux/tmux.conf
