@@ -17,5 +17,6 @@
     "window.commandCenter": false,
     "editor.stickyScroll.enabled": false,
     "window.menuBarVisibility": "compact",
-    "git.ignoreMissingGitWarning": true
+    "git.ignoreMissingGitWarning": true,
+    "chat.viewSessions.orientation": "stacked"
 }
