@@ -10,5 +10,12 @@
     "csharp.suppressDotnetInstallWarning": true,
     "[python]": {
         "editor.formatOnType": true
-    }
+    },
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "diffEditor.codeLens": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "window.commandCenter": false,
+    "editor.stickyScroll.enabled": false,
+    "window.menuBarVisibility": "compact",
+    "git.ignoreMissingGitWarning": true
 }
