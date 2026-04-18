@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-set -e
+# Logging
+log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
+err() { echo "[ERROR] $*" >&2; exit 1; }
 
-###############################################################################
-# Common packages
-###############################################################################
+# Validation
+[[ $EUID -eq 0 ]] || err "Script must be run with sudo"
+[[ -n "$(command -v lsb_release)" ]] || err "lsb_release not found"
 
+# Single apt update
+log "Updating package lists..."
 sudo apt-get update
+
+# Install common packages
+log "Installing common packages..."
 sudo apt-get install -y --no-install-recommends \
   apt-transport-https \
   build-essential \
@@ -28,53 +36,29 @@ sudo apt-get install -y --no-install-recommends \
   vim-gtk3 \
   zsh
 
-###############################################################################
-# Docker
-###############################################################################
+# Docker (using official script)
+log "Installing Docker..."
+curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
+sudo bash /tmp/get-docker.sh
+sudo usermod -aG docker "$USER"
+log "Docker installed. You may need to log out and back in."
 
-# Set up `apt` repository
-DOCKER_KEY="/usr/share/keyrings/docker-archive-keyring.gpg"
-wget -qO- https://download.docker.com/linux/ubuntu/gpg \
-  | gpg --dearmor \
-  | sudo tee $DOCKER_KEY > /dev/null
-echo "deb [arch=$(dpkg --print-architecture) signed-by=$DOCKER_KEY] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-# Install
+# VS Code (stable repository)
+log "Installing VS Code..."
+sudo apt-get install -y wget gpg
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /usr/share/keyrings/packages.microsoft.gpg > /dev/null
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
 sudo apt-get update
-sudo apt-get install -y --no-install-recommends docker-ce
+sudo apt-get install -y code
 
-# Update permissions
-sudo usermod -aG docker $USER
-newgrp docker  # activate group changes
-sudo systemctl restart docker
+# Dive (latest release)
+log "Installing Dive..."
+DIVE_VERSION=$(curl -s https://api.github.com/repos/wagoodman/dive/releases/latest | grep tag_name | cut -d'"' -f4)
+curl -L "https://github.com/wagoodman/dive/releases/download/${DIVE_VERSION}/dive_${DIVE_VERSION:1}_linux_amd64.deb" -o /tmp/dive.deb
+sudo apt-get install -y /tmp/dive.deb
 
-###############################################################################
-# Visual Studio Code
-###############################################################################
+# Shell configuration
+log "Setting default shell to zsh..."
+sudo chsh -s "$(which zsh)" "$USER"
 
-# Set up `apt` repository
-VSCODE_KEY="/usr/share/keyrings/packages.microsoft.gpg"
-wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
-  | gpg --dearmor \
-  | sudo tee $VSCODE_KEY > /dev/null
-echo "deb [arch=$(dpkg --print-architecture) signed-by=$VSCODE_KEY] https://packages.microsoft.com/repos/code stable main" \
-  | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
-
-# Install
-sudo apt-get update
-sudo apt-get install -y --no-install-recommends code
-
-###############################################################################
-# Dive
-###############################################################################
-
-curl -L https://github.com/wagoodman/dive/releases/download/v0.12.0/dive_0.12.0_linux_amd64.deb -o /tmp/dive.deb
-sudo apt install /tmp/dive.deb
-
-###############################################################################
-# User configuration
-###############################################################################
-
-# Make zsh the default shell
-sudo chsh -s $(which zsh) $(whoami)
+log "Setup complete!"
