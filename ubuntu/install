@@ -9,13 +9,16 @@ err() { echo "[ERROR] $*" >&2; exit 1; }
 [[ $EUID -eq 0 ]] || err "Script must be run with sudo"
 [[ -n "$(command -v lsb_release)" ]] || err "lsb_release not found"
 
+# Capture the real user who invoked sudo
+REAL_USER=${SUDO_USER:-$USER}
+
 # Single apt update
 log "Updating package lists..."
-sudo apt-get update
+apt-get update
 
 # Install common packages
 log "Installing common packages..."
-sudo apt-get install -y --no-install-recommends \
+apt-get install -y --no-install-recommends \
   apt-transport-https \
   build-essential \
   ca-certificates \
@@ -39,36 +42,44 @@ sudo apt-get install -y --no-install-recommends \
 
 # Node.js (latest version via n package manager)
 log "Installing Node.js..."
-sudo npm cache clean -f
-sudo npm install -g n
-sudo n stable
+npm cache clean -f
+npm install -g n
+n stable
 
 # Docker (using official script)
 log "Installing Docker..."
 curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
-sudo bash /tmp/get-docker.sh
-sudo usermod -aG docker "$USER"
+bash /tmp/get-docker.sh
+usermod -aG docker "$REAL_USER"
 log "Docker installed. You may need to log out and back in."
 
 # VS Code (stable repository)
 log "Installing VS Code..."
-sudo apt-get install -y wget gpg
-wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | sudo tee /usr/share/keyrings/packages.microsoft.gpg > /dev/null
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
-sudo apt-get update
-sudo apt-get install -y code
+apt-get install -y wget gpg
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/packages.microsoft.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list
+apt-get update
+apt-get install -y code
 
 # Dive (latest release)
 log "Installing Dive..."
 DIVE_VERSION=$(curl -s https://api.github.com/repos/wagoodman/dive/releases/latest | grep tag_name | cut -d'"' -f4)
 curl -L "https://github.com/wagoodman/dive/releases/download/${DIVE_VERSION}/dive_${DIVE_VERSION:1}_linux_amd64.deb" -o /tmp/dive.deb
-sudo apt-get install -y /tmp/dive.deb
+apt-get install -y /tmp/dive.deb
 
 # Bazelisk (latest release)
 log "Installing Bazelisk..."
 BAZELISK_VERSION=$(curl -s https://api.github.com/repos/bazelbuild/bazelisk/releases/latest | grep tag_name | cut -d'"' -f4)
-sudo curl -L "https://github.com/bazelbuild/bazelisk/releases/download/${BAZELISK_VERSION}/bazelisk-linux-amd64" -o /usr/local/bin/bazelisk
-sudo chmod +x /usr/local/bin/bazelisk
-sudo ln -sf /usr/local/bin/bazelisk /usr/local/bin/bazel
+curl -L "https://github.com/bazelbuild/bazelisk/releases/download/${BAZELISK_VERSION}/bazelisk-linux-amd64" -o /usr/local/bin/bazelisk
+chmod +x /usr/local/bin/bazelisk
+ln -sf /usr/local/bin/bazelisk /usr/local/bin/bazel
+
+# uv
+log "Installing uv..."
+curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="/usr/local/bin" sh
+
+# pre-commit
+log "Installing pre-commit..."
+sudo -u "$REAL_USER" uv tool install pre-commit --with pre-commit-uv
 
 log "Setup complete!"
