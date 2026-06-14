@@ -15,3 +15,5 @@
   default = current
 [init]
   defautlBranch = main
+[merge]
+	conflictStyle = zdiff3
