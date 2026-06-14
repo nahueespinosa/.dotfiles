@@ -1,0 +1,29 @@
+---
+- name: Ensure dotfiles directory is owned by the real user
+  file:
+    path: "{{ playbook_dir | dirname | dirname }}"
+    owner: "{{ real_user }}"
+    group: "{{ real_user }}"
+    recurse: yes
+  become: yes
+
+- name: Create config directories
+  file:
+    path: "{{ item.dest | dirname }}"
+    state: directory
+    mode: "0755"
+    owner: "{{ real_user }}"
+    group: "{{ real_user }}"
+  loop: "{{ dotfile_links }}"
+  become: yes
+
+- name: Create configuration symlinks
+  file:
+    src: "{{ playbook_dir | dirname | dirname }}/{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    force: yes
+    owner: "{{ real_user }}"
+    group: "{{ real_user }}"
+  loop: "{{ dotfile_links }}"
+  become: yes
