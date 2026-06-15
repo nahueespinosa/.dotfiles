@@ -1,0 +1,16 @@
+---
+- name: Development environment provisioning (Ubuntu)
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  vars_files:
+    - "{{ playbook_dir }}/../vars/main.yml"
+
+  roles:
+    - role: system
+      name: "System provisioning"
+      tags: [system]
+
+    - role: dotfiles
+      name: "Configuration deployment"
+      tags: [dotfiles]

@@ -1,0 +1,148 @@
+---
+- name: Validate prerequisites
+  block:
+    - name: Check if running on Ubuntu/Debian
+      assert:
+        that:
+          - ansible_distribution in ['Ubuntu', 'Debian']
+        fail_msg: "This playbook is designed for Ubuntu/Debian systems"
+
+- name: Update APT cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+
+- name: Install common packages
+  apt:
+    name: "{{ apt_packages }}"
+    state: present
+    install_recommends: no
+  become: yes
+
+- name: Install Node.js via npm package manager
+  block:
+    - name: Clean npm cache
+      shell: npm cache clean -f
+      changed_when: false
+
+    - name: Install n (Node version manager)
+      shell: npm install -g n
+      changed_when: false
+
+    - name: Install stable Node.js
+      shell: n {{ node_version }}
+      changed_when: false
+  become: yes
+
+- name: Install Docker
+  block:
+    - name: Download Docker install script
+      get_url:
+        url: "https://get.docker.com"
+        dest: "/tmp/get-docker.sh"
+        mode: "0755"
+
+    - name: Run Docker install script
+      shell: bash /tmp/get-docker.sh
+      args:
+        creates: /usr/bin/docker
+
+    - name: Add user to docker group
+      user:
+        name: "{{ real_user }}"
+        groups: docker
+        append: yes
+      become: yes
+
+- name: Install VS Code
+  block:
+    - name: Add Microsoft GPG key
+      shell: |
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | \
+        gpg --dearmor > /usr/share/keyrings/packages.microsoft.gpg
+      changed_when: false
+      become: yes
+
+    - name: Add VS Code repository
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main"
+        state: present
+      become: yes
+
+    - name: Install VS Code package
+      apt:
+        name: code
+        state: present
+      become: yes
+
+- name: Install Dive (Docker image explorer)
+  block:
+    - name: Get latest Dive release version
+      shell: |
+        curl -s https://api.github.com/repos/wagoodman/dive/releases/latest | \
+        grep -oP '"tag_name": "\K[^"]+' | head -1
+      register: dive_version
+      changed_when: false
+
+    - name: Download Dive .deb
+      get_url:
+        url: "https://github.com/wagoodman/dive/releases/download/{{ dive_version.stdout }}/dive_{{ dive_version.stdout | regex_replace('^v', '') }}_linux_amd64.deb"
+        dest: "/tmp/dive.deb"
+      when: dive_version.stdout | length > 0
+
+    - name: Install Dive
+      apt:
+        deb: "/tmp/dive.deb"
+        state: present
+      become: yes
+      when: dive_version.stdout | length > 0
+
+- name: Install Bazelisk
+  block:
+    - name: Get latest Bazelisk release version
+      shell: |
+        curl -s https://api.github.com/repos/bazelbuild/bazelisk/releases/latest | \
+        grep -oP '"tag_name": "\K[^"]+' | head -1
+      register: bazelisk_version
+      changed_when: false
+
+    - name: Download Bazelisk
+      get_url:
+        url: "https://github.com/bazelbuild/bazelisk/releases/download/{{ bazelisk_version.stdout }}/bazelisk-linux-amd64"
+        dest: "/usr/local/bin/bazelisk"
+        mode: "0755"
+      become: yes
+      when: bazelisk_version.stdout | length > 0
+
+    - name: Create bazel symlink to bazelisk
+      file:
+        src: "/usr/local/bin/bazelisk"
+        dest: "/usr/local/bin/bazel"
+        state: link
+        force: yes
+      become: yes
+      when: bazelisk_version.stdout | length > 0
+
+- name: Install uv (Python package manager)
+  block:
+    - name: Check if uv is already installed
+      command: which uv
+      register: uv_installed
+      changed_when: false
+      failed_when: false
+
+    - name: Install uv
+      shell: |
+        curl -LsSf https://astral.sh/uv/install.sh | \
+        env UV_INSTALL_DIR="{{ uv_install_dir }}" sh
+      environment:
+        UV_INSTALL_DIR: "{{ uv_install_dir }}"
+      when: uv_installed.rc != 0
+      changed_when: false
+
+    - name: Install uv-managed tools
+      shell: |
+        {{ uv_install_dir }}/uv tool install {{ item }}
+      loop: "{{ uv_managed_tools }}"
+      changed_when: false
