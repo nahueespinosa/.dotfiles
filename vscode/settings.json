@@ -1,22 +1,24 @@
 {
-    "cmake.configureOnOpen": false,
-    "editor.renderWhitespace": "all",
-    "workbench.editor.untitled.hint": "hidden",
-    "terminal.integrated.scrollback": 10000,
-    "explorer.confirmDragAndDrop": false,
-    "workbench.startupEditor": "none",
-    "editor.tabSize": 2,
-    "dotnetAcquisitionExtension.enableTelemetry": false,
-    "csharp.suppressDotnetInstallWarning": true,
-    "[python]": {
-        "editor.formatOnType": true
-    },
-    "C_Cpp.intelliSenseEngine": "disabled",
-    "diffEditor.codeLens": true,
-    "diffEditor.ignoreTrimWhitespace": false,
-    "window.commandCenter": false,
-    "editor.stickyScroll.enabled": false,
-    "window.menuBarVisibility": "compact",
-    "git.ignoreMissingGitWarning": true,
-    "chat.viewSessions.orientation": "stacked"
+  "cmake.configureOnOpen": false,
+  "editor.renderWhitespace": "all",
+  "workbench.editor.untitled.hint": "hidden",
+  "terminal.integrated.scrollback": 10000,
+  "explorer.confirmDragAndDrop": false,
+  "workbench.startupEditor": "none",
+  "editor.tabSize": 2,
+  "dotnetAcquisitionExtension.enableTelemetry": false,
+  "csharp.suppressDotnetInstallWarning": true,
+  "[python]": {
+    "editor.formatOnType": true
+  },
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "diffEditor.codeLens": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "window.commandCenter": false,
+  "editor.stickyScroll.enabled": false,
+  "window.menuBarVisibility": "compact",
+  "git.ignoreMissingGitWarning": true,
+  "chat.viewSessions.orientation": "stacked",
+  "gitlens.ai.model": "vscode",
+  "gitlens.ai.vscode.model": "copilot:gpt-4.1"
 }
