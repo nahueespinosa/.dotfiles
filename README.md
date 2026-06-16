@@ -37,5 +37,5 @@ Clone this repository and run the installation script:
 
 ```bash
 cd $HOME && git clone git@github.com:nahueespinosa/.dotfiles.git
-ansible-playbook ~/.dotfiles/ansible/playbooks/main.yml
+ansible-playbook ~/.dotfiles/ansible/playbooks/main.yml --ask-become-pass
 ```
