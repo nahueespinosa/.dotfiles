@@ -7,10 +7,10 @@
     - "{{ playbook_dir }}/../vars/main.yml"
 
   roles:
-    - role: system
+    - role: "{{ playbook_dir }}/../roles/system"
       name: "System provisioning"
       tags: [system]
 
-    - role: dotfiles
+    - role: "{{ playbook_dir }}/../roles/dotfiles"
       name: "Configuration deployment"
       tags: [dotfiles]
